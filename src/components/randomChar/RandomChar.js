@@ -4,21 +4,22 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import MarvelService from '../../Services/MarvelService';
 
 import './randomChar.scss';
-//import thor from '../../resources/img/thor.jpeg';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 class RandomChar extends Component {
-
-    constructor(props) {
-        super(props);
-        this.updateChar();
-    }
 
     state = {
         character:{},
         loading: true,
         error: false
     };
+
+    componentDidMount() {
+        this.updateChar();
+    }
+
+    componentDidUpdate() {
+    }
 
     marvelService = new MarvelService();
 
@@ -46,8 +47,6 @@ class RandomChar extends Component {
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner /> : null;
         const content = !(loading || error)? <View char={character}/> : null;
-
-        //this.marvelService.getAllCharacters().then(res => console.log(res));
         return (
             <div className="randomchar">
                 {errorMessage}
@@ -62,7 +61,7 @@ class RandomChar extends Component {
                         Or choose another one
                     </p>
                     <button className="button button__main">
-                        <div className="inner">try it</div>
+                        <div className="inner" onClick={this.updateChar}>try it</div>
                     </button>
                     <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
                 </div>
@@ -73,24 +72,25 @@ class RandomChar extends Component {
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki} = char;
+    const thumbnailStyle = (thumbnail.includes('not')) ? {objectFit: 'contain'} : null;
     return (
         <div className="randomchar__block">
-                    <img src={thumbnail} alt="Random character" className="randomchar__img"/>
-                    <div className="randomchar__info">
-                        <p className="randomchar__name">{name}</p>
-                        <p className="randomchar__descr">
-                            {description}
-                        </p>
-                        <div className="randomchar__btns">
-                            <a href={homepage} className="button button__main">
-                                <div className="inner">homepage</div>
-                            </a>
-                            <a href={wiki} className="button button__secondary">
-                                <div className="inner">Wiki</div>
-                            </a>
-                        </div>
-                    </div>
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={thumbnailStyle}/>
+            <div className="randomchar__info">
+                <p className="randomchar__name">{name}</p>
+                <p className="randomchar__descr">
+                    {description}
+                </p>
+                <div className="randomchar__btns">
+                    <a href={homepage} className="button button__main">
+                        <div className="inner">homepage</div>
+                    </a>
+                    <a href={wiki} className="button button__secondary">
+                        <div className="inner">Wiki</div>
+                    </a>
                 </div>
+            </div>
+        </div>
     );
 }
 
